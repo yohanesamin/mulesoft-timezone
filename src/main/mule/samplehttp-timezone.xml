@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="33924602-8e2e-4c45-b027-361fb4f6a3a1" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="07bdd61d-59cb-40a3-a8bf-f1638f27f0b9" >
+		<http:request-connection host="http://api.timezonedb.com" port="80" />
+	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="7b9a60c1-5222-410b-9789-02d169a6464b" >
+		<http:listener-connection host="localhost" port="8082" />
+	</http:listener-config>
+	<flow name="samplehttp-timezoneFlow" doc:id="f0680250-3754-4315-bf39-b7ba52c92562" >
+		<http:listener doc:name="Listener" doc:id="5dcb165a-98cc-4132-8182-5d737e0ed8ac" config-ref="HTTP_Listener_config1" path="/sample-timezone"/>
+		<http:request method="GET" doc:name="Request" doc:id="8927dba4-96f7-4e3e-a1e2-d1815ad832fd" config-ref="HTTP_Request_configuration" path="/v2.1/get-time-zone"/>
+		<ee:transform doc:name="Transform Message" doc:id="ac54930b-e145-4830-956f-abee59c3de8b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="533f9994-de07-4fde-aa21-f0fc5cb3c614" message="#[payload]"/>
+	</flow>
+</mule>
